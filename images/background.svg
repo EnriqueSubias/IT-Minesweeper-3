@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="svg5" inkscape:version="1.1.2 (0a00cf5339, 2022-02-04, custom)" sodipodi:docname="symbols.svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 100"
+	 style="enable-background:new 0 0 1000 100;" xml:space="preserve">
+<style type="text/css">
+	.st0{font-family:'Menlo-Bold';}
+	.st1{font-size:96px;}
+	.st2{opacity:0.94;enable-background:new    ;}
+	.st3{opacity:0.94;fill:#C80000;enable-background:new    ;}
+	.st4{opacity:0.94;fill:url(#path15198_00000179647306672889177130000010071441163135965374_);enable-background:new    ;}
+</style>
+<sodipodi:namedview  bordercolor="#666666" borderopacity="1.0" gridtolerance="10" id="namedview7" inkscape:current-layer="layer1" inkscape:cx="918.43492" inkscape:cy="46.440726" inkscape:document-units="px" inkscape:pagecheckerboard="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1057" inkscape:window-maximized="1" inkscape:window-width="1920" inkscape:window-x="1016" inkscape:window-y="1" inkscape:zoom="4.6726229" pagecolor="#ffffff" showgrid="true" units="px">
+	<inkscape:grid  empspacing="100" id="grid824" type="xygrid"></inkscape:grid>
+</sodipodi:namedview>
+<g id="layer1" inkscape:groupmode="layer" inkscape:label="Ebene 1">
+	<text transform="matrix(1 0 0 1 20.6641 87.5762)" class="st0 st1">1</text>
+	<text transform="matrix(1 0 0 1 120.6641 87.5762)" class="st0 st1">2</text>
+	<text transform="matrix(1 0 0 1 220.6641 87.5762)" class="st0 st1">3</text>
+	<text transform="matrix(1 0 0 1 319.6797 87.5762)" class="st0 st1">4</text>
+	<text transform="matrix(1 0 0 1 520.6641 87.5762)" class="st0 st1">6</text>
+	<text transform="matrix(1 0 0 1 424.2324 87.5762)" class="st0 st1">5</text>
+	<text transform="matrix(1 0 0 1 620.6641 87.5762)" class="st0 st1">7</text>
+	<text transform="matrix(1 0 0 1 720.6641 87.5762)" class="st0 st1">8</text>
+	<rect id="rect13458" x="818.7" y="5.6" class="st2" width="11.4" height="88.5"/>
+	
+		<path id="path13598" inkscape:flatsided="true" inkscape:randomized="0" inkscape:rounded="0" inkscape:transform-center-x="-2.1109449" sodipodi:arg1="0" sodipodi:arg2="1.0471976" sodipodi:cx="830.13611" sodipodi:cy="17.592884" sodipodi:r1="31.913498" sodipodi:r2="15.956749" sodipodi:sides="3" sodipodi:type="star" class="st3" d="
+		M878.9,35.6L831,63.3V8L878.9,35.6z"/>
+	
+		<radialGradient id="path15198_00000137134568411885216920000008517570963141652893_" cx="-7765.1099" cy="4733.2251" r="399.7459" gradientTransform="matrix(4.480656e-02 -1.791787e-02 -1.924396e-02 -4.738605e-02 1383.3701 131.0354)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#FFFAFF"/>
+		<stop  offset="1" style="stop-color:#000000"/>
+	</radialGradient>
+	
+		<path id="path15198" sodipodi:nodetypes="ccccccccccccccccccccccccc" style="opacity:0.94;fill:url(#path15198_00000137134568411885216920000008517570963141652893_);enable-background:new    ;" d="
+		M963.9,71.5l-9,3.7l-4.9,25.3l-4.9-25.3l-9-3.7l-10.6,3.7l3.7-10.6l-3.7-8.9L900,50.9l25.5-4.8l3.7-8.9l-3.7-10.6l10.6,3.7l9-3.7
+		L950,1.3l4.9,25.3l9,3.7l10.6-3.7l-3.7,10.6l3.7,8.9l25.5,4.8l-25.5,4.8l-3.7,8.9l3.7,10.6L963.9,71.5z"/>
+</g>
+</svg>

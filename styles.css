@@ -1,0 +1,219 @@
+:root {
+    /* Background colors */
+    --color-title: #b0c3ab;
+    --color-background: #cbc9c8;
+    --color-footer: #98c2f0;
+
+    /* Aspect ratio */
+    --ar-width: 10;
+    --ar-height: 18;
+
+    /* For the cells */
+    --shadowsize: 4px;
+    --shadowcolor: rgb(67, 67, 67);
+    --highlightcolor: rgb(244, 244, 244);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.content {
+    width: min(100vw, calc(100vh * (var(--ar-width) / var(--ar-height))));
+    height: min(100vh, calc(var(--ar-height) * 10vw));
+    margin: 0 auto;
+}
+
+
+/* Header */
+
+header {
+    height: calc(100% * (4 / var(--ar-height)));
+    background-color: var(--color-title);
+}
+
+@media (min-width: 480px) {
+    header {
+        background-image: url("images/boat.jpg");
+        background-size: 100%;
+        background-position: 50%;
+    }
+}
+
+#header-title {
+    padding: 1em;
+    font-family: 'Menlo', monospace;
+}
+
+
+/* Play Field */
+
+#playfield {
+    height: calc(100% * (10 / var(--ar-height)));
+    background-color: grey;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+    position: relative;
+}
+
+.cell {
+    width: calc((100% / 9) - 3px - (2 * var(--shadowsize)));
+    height: calc((100% / 9) - 3px - (2 * var(--shadowsize)));
+    background-color: lightgray;
+    float: left;
+    flex-shrink: 0;
+    border: var(--shadowsize) solid transparent;
+}
+
+.covered {
+    border-top: var(--shadowsize) solid var(--highlightcolor);
+    border-left: var(--shadowsize) solid var(--highlightcolor);
+
+    border-bottom: var(--shadowsize) solid var(--shadowcolor);
+    border-right: var(--shadowsize) solid var(--shadowcolor);
+}
+
+.cell-symbol-1 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+}
+
+.cell-symbol-2 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 11% 50%;
+}
+
+.cell-symbol-3 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 22% 50%;
+}
+
+.cell-symbol-4 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 33% 50%;
+}
+
+.cell-symbol-5 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 44% 50%;
+}
+
+.cell-symbol-6 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 55% 50%;
+}
+
+.cell-symbol-7 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 66% 50%;
+}
+
+.cell-symbol-8 {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 77% 50%;
+}
+
+.cell-symbol-flag {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 88% 50%;
+}
+
+.cell-symbol-bomb {
+    background-image: url("images/background.svg");
+    background-size: 1000%;
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+}
+
+.mineHit {
+    background-color: rgb(255, 60, 60);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay>div {
+    background-color: white;
+    outline: 2px solid black;
+    font-size: 4em;
+    padding: 0.5em;
+    border-radius: 10px;
+    font-family: 'Menlo', monospace;
+    flex-shrink: 0;
+}
+
+#playfield:not(:hover) .overlay {
+    display: none;
+}
+
+
+/* Buttons */
+
+#buttons {
+    height: calc(100% * (3 / var(--ar-height)));
+    background-color: var(--color-title);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.button {
+    width: 30%;
+    height: 50%;
+    font-size: 1.5em;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: lightgray;
+    font-family: 'Menlo', monospace;
+}
+
+
+/* Footer */
+
+footer {
+    height: calc(100% * (1 / var(--ar-height)));
+    background-color: var(--color-footer);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#footer-title {
+    padding: 1em;
+    font-family: 'Menlo', monospace;
+}
