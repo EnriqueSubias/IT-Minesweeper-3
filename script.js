@@ -40,37 +40,37 @@ const minesweeper = { // Avoids polluting the global namespace
     },
 
     // Builds the buttonbar
-    buildButtons: function () {
+    buildButtons: async function () {
         const divButtons = document.createElement('div');
         divButtons.id = 'buttons';
 
         const buttonSmall = this.buildButton('button', 'game-small', 'Small');
         divButtons.appendChild(buttonSmall);
 
-        buttonSmall.addEventListener('click', () => {
+        buttonSmall.addEventListener('click', async () => {
             this.newGame("small");
-            this.logic.init(this.size, this.mines)
+            await this.logic.init(this.size, this.mines)
         });
 
         const buttonMedium = this.buildButton('button', 'game-medium', 'Medium');
         divButtons.appendChild(buttonMedium);
 
-        buttonMedium.addEventListener('click', () => {
+        buttonMedium.addEventListener('click', async () => {
             this.newGame('medium');
-            this.logic.init(this.size, this.mines)
+            await this.logic.init(this.size, this.mines)
         });
 
         const buttonLarge = this.buildButton('button', 'game-large', 'Large');
         divButtons.appendChild(buttonLarge);
 
-        buttonLarge.addEventListener('click', () => {
+        buttonLarge.addEventListener('click', async () => {
             this.newGame('large');
-            this.logic.init(this.size, this.mines)
+            await this.logic.init(this.size, this.mines)
         });
 
         // Default game on first load
         this.newGame("small");
-        this.logic.init(this.size, this.mines)
+        await this.logic.init(this.size, this.mines)
 
         return divButtons;
     },
@@ -165,7 +165,7 @@ const minesweeper = { // Avoids polluting the global namespace
         return cell;
     },
 
-    cellClick: function (event) {
+    cellClick: async function (event) {
         // console.dir(event);
         const x = event.target.dataset.x;
         const y = event.target.dataset.y;
@@ -173,7 +173,7 @@ const minesweeper = { // Avoids polluting the global namespace
 
         if (this.debug) console.log('Left click on cell ' + x + ',' + y + ' detected');
 
-        const result = this.logic.sweep(x, y);
+        const result = await this.logic.sweep(x, y);
         if (this.debug) console.dir(result);
 
         this.placeSymbol(result, x, y);
@@ -202,12 +202,12 @@ const minesweeper = { // Avoids polluting the global namespace
         textHolder.innerText = message;
     },
 
-    revealAllMines: function (minesList) {
+    revealAllMines: async function (minesList) {
         // Uncovers all mines in the playfield, used when the player loses
         for (let i = 0; i < minesList.length; i++) {
             const x = minesList[i].x;
             const y = minesList[i].y;
-            const result = this.logic.sweep(x, y);
+            const result = await this.logic.sweep(x, y);
             this.placeSymbol(result, x, y);
         }
     },
@@ -269,7 +269,7 @@ const minesweeper = { // Avoids polluting the global namespace
         }
     },
 
-    init: function () {
+    init: async function () {
 
         this.logic = localLogic; // Sets the game logic to the local game logic object
 
@@ -289,7 +289,7 @@ const minesweeper = { // Avoids polluting the global namespace
         content.appendChild(divPlayfiled);
 
         // div#buttonbar
-        const divButtons = this.buildButtons();
+        const divButtons = await this.buildButtons();
         content.appendChild(divButtons);
 
         // footer
@@ -521,7 +521,7 @@ const localLogic = {
 
     },
 
-    init: function (size, numberOfMines) {
+    init: async function (size, numberOfMines) {
         console.log('Local game logic initialized with a size of ' + size + ' x ' + size + ' and ' + numberOfMines + ' mines');
 
         this.size = size;
