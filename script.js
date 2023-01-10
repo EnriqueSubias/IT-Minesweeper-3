@@ -116,13 +116,13 @@ const minesweeper = { // Avoids polluting the global namespace
     },
 
     // Starts a new game
-    newGame: function (size) {
-        this.generatePlayfield(size);
+    newGame: async function (size) {
+        await this.generatePlayfield(size);
         // The program handles all clicks in a single callback per click type (Since each cell has data-x and data-y coordinates).
     },
 
     // Starts a new game and then initializes the playfield with the given size
-    generatePlayfield: function (size) {
+    generatePlayfield: async function (size) {
 
         this.gameType(size);
 
@@ -178,13 +178,13 @@ const minesweeper = { // Avoids polluting the global namespace
 
         this.placeSymbol(result, x, y);
 
-        if (result.lose === true) {
-            this.revealAllMines(result.minesList);
+        if (result.minehit === true) {
+            this.revealAllMines(result);
             event.target.classList.add('mineHit');
             this.displayOverlay('You lose');
         }
 
-        if (result.win === true) {
+        if (result.userwins === true) {
             this.displayOverlay('You win');
         }
     },
@@ -202,27 +202,26 @@ const minesweeper = { // Avoids polluting the global namespace
         textHolder.innerText = message;
     },
 
-    revealAllMines: async function (minesList) {
+    revealAllMines: async function (result) {
         // Uncovers all mines in the playfield, used when the player loses
-        for (let i = 0; i < minesList.length; i++) {
-            const x = minesList[i].x;
-            const y = minesList[i].y;
-            const result = await this.logic.sweep(x, y);
+        for (let i = 0; i < result.mines.length; i++) {
+            const x = result.mines[i].x;
+            const y = result.mines[i].y;
             this.placeSymbol(result, x, y);
         }
     },
 
-    placeSymbol: function (result, x, y) {
+    placeSymbol: async function (result, x, y) {
         const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
         cell.className = 'cell';
 
         // remove class covered
         cell.className = cell.className.replace('covered', '');
 
-        if (result.mineHit === true) {
+        if (result.minehit === true) {
             cell.className += ' cell-symbol-bomb';
         }
-        if (result.mineHit === false) {
+        if (result.minehit === false) {
             if (result.minesAround === 0) {
 
                 for (let i = 0; i < result.emptyCells.length; i++) {
@@ -271,7 +270,7 @@ const minesweeper = { // Avoids polluting the global namespace
 
     init: async function () {
 
-        this.logic = localLogic; // Sets the game logic to the local game logic object
+        this.logic = remoteLogic; // Sets the game logic to the remote game logic object
 
         const body = document.querySelector('body'); // Finds the body element
 
@@ -298,264 +297,33 @@ const minesweeper = { // Avoids polluting the global namespace
     }
 }
 
+const remoteLogic = {
+    // Minesweeper remote game logic
 
-const localLogic = {
-    // Minesweeper local game logic
+    serverUrl: 'https://www2.hs-esslingen.de/~melcher/internet-technologien/minesweeper/', // The URL of the server
+    var: token = null,
 
-    //The game ends,
-    // • when the user has uncovered all cells without a mine
-    // • or has hit a mine
-
-    // So the App has to track the number of uncovered cells.
-    // If it equals the total number of cells minus the mine count, the user has won.
-
-    sweep: function (x, y) {
-        // This function sweeps the field for mines and is called when a cell is uncovered
-
-        x = parseInt(x);
-        y = parseInt(y);
-
-        if (minesweeper.debug) console.log(this.movesCounter + ' moves made');
-
-        if (this.movesCounter === 0) { // If this is the first move
-            this.placeMines(x, y);
-        }
-
-        this.movesCounter += 1;
-
-        this.uncoveredCells[x][y] = true; // Marks the cell as uncovered
-        if (minesweeper.debug) console.log('1 cell uncovered');
-
-        if (this.field[x][y] === true) {
-            return { mineHit: true, minesList: this.collectMines(), lose: true };
-
-        } else if (this.field[x][y] === false) {
-            if (this.countMinesAround(x, y) > 0) {
-                if (this.checkWin() === true) {
-                    return { mineHit: false, minesAround: this.countMinesAround(x, y), emptyCells: undefined, win: true };
-                }
-                return { mineHit: false, minesAround: this.countMinesAround(x, y), emptyCells: undefined };
-            }
-
-            emtpyCellsList = this.getEmptyCells(x, y)
-            let num = this.uncoverMultipleCells(emtpyCellsList);
-            if (minesweeper.debug) console.log(num + ' cells uncovered');
-
-            if (this.checkWin() === true) {
-                return { mineHit: false, minesAround: this.countMinesAround(x, y), emptyCells: emtpyCellsList, win: true };
-            }
-            return { mineHit: false, minesAround: this.countMinesAround(x, y), emptyCells: emtpyCellsList };
-        }
-
+    sweep: async function (x, y) {
+        // Remote sweep function
+        const request = '?request=sweep' + '&token=' + this.token + '&x=' + x + '&y=' + y;
+        return await this.fetchAndDecode(request);
     },
 
-    collectMines: function () {
-        // This function collects all mines in the field and returns them as a list
-        let minesList = [];
-
-        for (let i = 0; i < this.field.length; i++) {
-            for (let j = 0; j < this.field[i].length; j++) {
-                if (this.field[i][j] == true) {
-                    minesList.push({ x: i, y: j });
-                }
-            }
-        }
-
-        return minesList;
-    },
-
-    checkWin: function () {
-        // This function checks if the user has won the game
-        // Returns true if the user has won, false if not
-        let coveredCells = 0;
-
-        for (let i = 0; i < this.field.length; i++) {
-            for (let j = 0; j < this.field[i].length; j++) {
-                if (this.uncoveredCells[i][j] === false) {
-                    coveredCells += 1;
-                }
-            }
-        }
-
-        if (coveredCells === this.numberOfMines) {
-            return true;
-        } else {
-            return false;
-        }
-    },
-
-    uncoverMultipleCells: function (emptyCellsList) {
-        // This function uncovers multiple cells at once
-        // It returns the number of uncovered cells
-        let num = 0;
-
-        for (let i = 0; i < emptyCellsList.length; i++) {
-            let x = emptyCellsList[i].x;
-            let y = emptyCellsList[i].y;
-
-            if (this.uncoveredCells[x][y] === false) {
-                this.uncoveredCells[x][y] = true;
-                num += 1;
-            }
-        }
-        return num;
-    },
-
-    countMinesAround: function (x, y) {
-        // This function returns the number of mines around a cell
-        let mines = 0;
-
-        for (let delX = -1; delX <= 1; delX++) {
-            for (let delY = -1; delY <= 1; delY++) {
-
-                if (this.cellOutsideField(x + delX, y + delY)) {
-                    continue; // If the cell is outside the field, skip it
-                }
-
-                if (this.field[x + delX][y + delY] === true) {
-                    mines++; // If there is a mine, increase the number of mines
-                }
-            }
-        }
-        return mines;
-
-    },
-
-    cellOutsideField: function (x, y) {
-        if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
-            return true; // If the cell is outside the field, return true
-        } else {
-            return false; // If the cell is inside the field, return false
-        }
-    },
-
-    getEmptyCells: function (x, y) {
-        // This function returns a list of cells around a empty cell,
-        // which have no mines around or are neighbours of cells with no mines around
-
-        let toDo = [];
-        let done = [];
-        toDo.push({ x: x, y: y, minesAround: 0 }); // Adds the first cell to the toDo list
-
-        while (toDo.length != 0) { // While there are cells in the toDo list
-            let currentCell = toDo.pop(); // Get the current cell from the end of the toDo list
-            done.push(currentCell); // Add the current cell to the done list
-
-            // Get a list of all neighbours of the current cell
-            let neighbours = this.getNeighboursOf(currentCell.x, currentCell.y);
-
-            // Loop through all neighbours
-            for (let i = 0; i < neighbours.length; i++) {
-                // If the neighbour is already in the done list, skip it
-                if (this.cellInList(neighbours[i].x, neighbours[i].y, done)) {
-                    continue;
-                }
-                // If the neighbour has mines around, add it to the done list
-                if (neighbours[i].minesAround > 0) {
-                    done.push(neighbours[i]);
-                } else {
-                    // If the neighbour has no mines around, add it to the toDo list
-                    toDo.push(neighbours[i]);
-                }
-            }
-        }
-        return done;
-    },
-
-    getNeighboursOf: function (x, y) {
-        // This function returns a list of all neighbours of a cell
-        let neighbours = [];
-        for (let delX = -1; delX <= 1; delX++) {
-            for (let delY = -1; delY <= 1; delY++) {
-
-                if (this.cellOutsideField(x + delX, y + delY)) {
-                    continue; // If the cell is outside the field, skip it
-                }
-                if (delX === 0 && delY === 0) {
-                    continue; // If the cell is the current cell, skip it
-                }
-                neighbours.push({ x: x + delX, y: y + delY, minesAround: this.countMinesAround(x + delX, y + delY) });
-            }
-        }
-        return neighbours;
-    },
-
-    cellInList: function (x, y, list) {
-        // This function checks if a cell is in a list
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].x === x && list[i].y === y) {
-                return true;
-            }
-        }
-        return false;
-    },
-
-    placeMines: function (x, y) {
-        // This function places the mines on the field
-        // It takes the coordinates of the first click as parameters
-        // It places the mines in a way that the first click is always safe
-
-        // Infinite loop that breaks when all mines are placed
-        this.minesLeft = this.numberOfMines;
-        while (true) {
-            const tryX = Math.floor(Math.random() * this.size);
-            const tryY = Math.floor(Math.random() * this.size);
-
-            if (tryX === x && tryY === y) {
-                continue; // If the coordinates are the same as the first click, try again
-            }
-
-            if (this.field[tryX][tryY] === true) {
-                continue; // If there is already a mine there, try again
-            }
-
-            this.field[tryX][tryY] = true; // Place a mine
-            this.minesLeft--; // Decrease the number of mines left
-
-            if (this.minesLeft === 0) {
-                break; // If all mines are placed, break the loop
-            }
-        }
-
-        if (minesweeper.debug) console.dir(this.field);
-
+    fetchAndDecode: async function (query) {
+        // This function fetches a url and returns the decoded json response
+        console.log('Fetch: ' + this.serverUrl + query)
+        const response = await fetch(this.serverUrl + query);
+        return await response.json();
     },
 
     init: async function (size, numberOfMines) {
-        console.log('Local game logic initialized with a size of ' + size + ' x ' + size + ' and ' + numberOfMines + ' mines');
+        // This function initializes the game, storing the togen given by the server
+        const userid = 'ensuit00';
+        const request = '?request=init&userid=' + userid + '&size=' + size + '&mines=' + numberOfMines;
+        const response = await this.fetchAndDecode(request);
 
-        this.size = size;
-        this.numberOfMines = numberOfMines;
-
-        // This field is where the game logic object stores the mines in:
-        this.field = new Array(this.size);
-        for (let i = 0; i < this.size; i++) {
-            this.field[i] = new Array(this.size);
-            for (let j = 0; j < this.size; j++) {
-                this.field[i][j] = false; // False means no mine
-            }
-        }
-        if (minesweeper.debug) {
-            console.log('Field initialized: ')
-            console.dir(this.field);
-        }
-
-        // uncoveredCells array of the size of the field
-        this.uncoveredCells = new Array(this.size);
-        for (let i = 0; i < this.size; i++) {
-            this.uncoveredCells[i] = new Array(this.size);
-            for (let j = 0; j < this.size; j++) {
-                this.uncoveredCells[i][j] = false; // False means the cell is covered
-            }
-        }
-        if (minesweeper.debug) {
-            console.log('Uncovered cells initialized: ')
-            console.dir(this.uncoveredCells);
-        }
-
-        // Delay the initialization of the mines until the first click
-
-        // Initialize the move counter
-        this.movesCounter = 0;
+        this.token = response.token; // Save the token
+        console.log('Token: ' + this.token);
     }
+
 }
